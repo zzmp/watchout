@@ -1,3 +1,8 @@
+var scorerId;
+var score = 0;
+var hiScore = 0;
+var numCollisions = 0;
+
 var numEnemies = 25;
 var radius = 5;
 var width = 500;
@@ -44,6 +49,7 @@ var stepEnemies = function () {
   enemies
     .transition()
       .duration(1000)
+      // detect collisions on tweening
       .tween('collisionDetection', function () {
 	var x0 = d3.select(this).attr('x');
 	var y0 = d3.select(this).attr('y');
@@ -92,17 +98,35 @@ var dragPlayer = d3.behavior.drag()
 // give player draggable behavior
 player.call(dragPlayer);
 
-// basic collision detection
+// basic collision detection (invoked in tweening)
 var isCollided = function (x, y) {
   var dx = +player.attr('cx') - x + radius;
   var dy = +player.attr('cy') - y + radius;
 
   if (dx * dx + dy * dy < radius * radius) {
-    console.log('collision detected');
+    recordCollision();
   }
 };
 
-// track scoring
+// scoring functions
+var recordCollision = function () {
+  numCollisions++;
+  // set html
+  restart();
+};
+
+var updateScore = function () {
+  score++;
+  hiScore = score > hiScore ? score : hiScore;
+  // set html
+};
+
+var restart = function() {
+  scorerId && clearInterval(scorerId);
+  score = 0;
+  // set html
+  scorerId = setInterval(updateScore, 50);
+}
 
 // delay start to avoid overwriting first transition
 setTimeout(stepEnemies, 1000);
