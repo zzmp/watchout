@@ -62,8 +62,16 @@ var player = svg.selectAll('circle')
 
 var dragPlayer = d3.behavior.drag()
   .on('drag', function () {
-    player.attr('cx', +player.attr('cx') + d3.event.dx);
-    player.attr('cy', +player.attr('cy') + d3.event.dy);
+    var x = +player.attr('cx') + d3.event.dx;
+    var y = +player.attr('cy') + d3.event.dy;
+
+    x = x < radius / 2 ? radius / 2 : x;
+    x = x > width - radius / 2 ? width - radius / 2 : x;
+    y = y < radius / 2 ? radius / 2 : y;
+    y = y > height - radius / 2 ? height - radius / 2 : y;
+
+    player.attr('cx', x);
+    player.attr('cy', y);
   });
 
 // give player draggable behavior
