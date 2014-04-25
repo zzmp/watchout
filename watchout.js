@@ -44,9 +44,24 @@ var stepEnemies = function () {
   enemies
     .transition()
       .duration(1000)
-      .attr('x', function (d, i) { return x(); })
-      .attr('y', function (d, i) { return y(); });
+      .tween('collisionDetection', function () {
+	var x0 = d3.select(this).attr('x');
+	var y0 = d3.select(this).attr('y');
 
+	var ix = d3.interpolate(x0, x());
+	var iy = d3.interpolate(y0, y());
+	
+	return function (t) {
+	  var x = ix(t);
+	  var y = iy(t);
+
+	  d3.select(this).attr('x', x);
+	  d3.select(this).attr('y', y);
+
+	  isCollided(x, y);
+	};
+      });
+	  
   setTimeout(stepEnemies, 1000);
 };
 
@@ -78,18 +93,13 @@ var dragPlayer = d3.behavior.drag()
 player.call(dragPlayer);
 
 // basic collision detection
-var isCollided = function (callback) {
-  var x = +player.attr('cx');
-  var y = +player.attr('cy');
+var isCollided = function (x, y) {
+  var dx = +player.attr('cx') - x + radius;
+  var dy = +player.attr('cy') - y + radius;
 
-  enemies.each(function (d, i) {
-    var dx = x - d3.select(this).attr('x');
-    var dy = y - d3.select(this).attr('y');
-
-    if (dx * dx + dy * dy < radius * radius) {
-      callback();
-    }
-  });
+  if (dx * dx + dy * dy < radius * radius) {
+    console.log('collision detected');
+  }
 };
 
 // track scoring
