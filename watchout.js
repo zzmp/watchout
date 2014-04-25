@@ -15,12 +15,12 @@ var y = function () {
 };
 
 // create svg element
-d3.select('body').append('svg')
+var svg = d3.select('body').append('svg')
   .attr('width', width)
   .attr('height', height);
 
 // initialize enemies within svg element
-enemies = d3.select('svg').selectAll('circle')
+enemies = svg.selectAll('circle')
   .data(enemies) // no key function necessary
   .enter()
   .append('image')
@@ -44,7 +44,24 @@ var stepEnemies = function () {
 
 stepEnemies();
 
-// make draggable player element
+// initialize player within svg element
+var player = svg.selectAll('circle')
+  .data([null])
+  .enter()
+  .append('circle')
+  .classed('player', true)
+  .attr('r', radius)
+  .attr('cx', width / 2)
+  .attr('cy', width / 2);
+
+var dragPlayer = d3.behavior.drag()
+  .on('drag', function () {
+    player.attr('cx', +player.attr('cx') + d3.event.dx);
+    player.attr('cy', +player.attr('cy') + d3.event.dy);
+  });
+
+// give player draggable behavior
+player.call(dragPlayer);
 
 // detect collisions
 
