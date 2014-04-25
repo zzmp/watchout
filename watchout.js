@@ -26,10 +26,18 @@ enemies = svg.selectAll('circle')
   .append('image')
   .classed('enemy', true)
   .attr('xlink:href', 'file:///Users/zmp/Hack\ Reactor/d3/asteroid.png')
-  .attr('width', radius * 2)
-  .attr('height', radius * 2)
-  .attr('x', function (d, i) { return x(); })
-  .attr('y', function (d, i) { return y(); });
+  .attr('width', 0)
+  .attr('height', 0)
+  .attr('x', function (d, i) { return x() + radius; })
+  .attr('y', function (d, i) { return y() + radius; });
+
+enemies
+  .transition()
+    .duration(1000)
+    .attr('width', radius * 2)
+    .attr('height', radius * 2)
+    .attr('x', function (d, i) { return d3.select(this).attr('x') - radius; })
+    .attr('y', function (d, i) { return d3.select(this).attr('y') - radius; });
 
 // move enemies to random location every second
 var stepEnemies = function () {
@@ -41,8 +49,6 @@ var stepEnemies = function () {
 
   setTimeout(stepEnemies, 1000);
 };
-
-stepEnemies();
 
 // initialize player within svg element
 var player = svg.selectAll('circle')
@@ -80,3 +86,5 @@ var isCollided = function (callback) {
 
 // track scoring
 
+// delay start to avoid overwriting first transition
+setTimeout(stepEnemies, 1000);
