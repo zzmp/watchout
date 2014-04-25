@@ -3,6 +3,10 @@ var score = 0;
 var hiScore = 0;
 var numCollisions = 0;
 
+var nodeScore = d3.select('.current > span');
+var nodeHiScr = d3.select('.high > span');
+var nodeColls = d3.select('.collisions > span');
+
 var numEnemies = 25;
 var radius = 5;
 var width = 500;
@@ -48,7 +52,7 @@ enemies
 var stepEnemies = function () {
   enemies
     .transition()
-      .duration(1000)
+      .duration(2000)
       // detect collisions on tweening
       .tween('collisionDetection', function () {
 	var x0 = d3.select(this).attr('x');
@@ -68,7 +72,7 @@ var stepEnemies = function () {
 	};
       });
 	  
-  setTimeout(stepEnemies, 1000);
+  setTimeout(stepEnemies, 2000);
 };
 
 // initialize player within svg element
@@ -111,22 +115,26 @@ var isCollided = function (x, y) {
 // scoring functions
 var recordCollision = function () {
   numCollisions++;
-  // set html
+  nodeColls.text(numCollisions);
   restart();
 };
 
 var updateScore = function () {
   score++;
   hiScore = score > hiScore ? score : hiScore;
-  // set html
+  nodeScore.text(score);
+  nodeHiScr.text(hiScore);
 };
 
 var restart = function() {
   scorerId && clearInterval(scorerId);
   score = 0;
-  // set html
+  nodeScore.text(score);
   scorerId = setInterval(updateScore, 50);
 }
+
+// start the game
+restart();
 
 // delay start to avoid overwriting first transition
 setTimeout(stepEnemies, 1000);
