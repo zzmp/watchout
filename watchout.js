@@ -63,7 +63,20 @@ var dragPlayer = d3.behavior.drag()
 // give player draggable behavior
 player.call(dragPlayer);
 
-// detect collisions
+// basic collision detection
+var isCollided = function (callback) {
+  var x = +player.attr('cx');
+  var y = +player.attr('cy');
+
+  enemies.each(function (d, i) {
+    var dx = x - d3.select(this).attr('x');
+    var dy = y - d3.select(this).attr('y');
+
+    if (dx * dx + dy * dy < radius * radius) {
+      callback();
+    }
+  });
+};
 
 // track scoring
 
