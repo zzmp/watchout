@@ -111,8 +111,8 @@ player.call(dragPlayer);
 
 // basic collision detection (invoked in tweening)
 var isCollided = function (x, y) {
-  var dx = +player.attr('cx') - x + radius;
-  var dy = +player.attr('cy') - y + radius;
+  var dx = +player.attr('cx') - x - radius;
+  var dy = +player.attr('cy') - y - radius;
 
   if (dx * dx + dy * dy < radius * radius) {
     recordCollision();
