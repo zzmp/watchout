@@ -97,6 +97,13 @@ var dragPlayer = d3.behavior.drag()
 
     player.attr('cx', x);
     player.attr('cy', y);
+
+    enemies.each( function () {
+      var x = d3.select(this).attr('x');
+      var y = d3.select(this).attr('y');
+      
+      isCollided(x, y);
+    });
   });
 
 // give player draggable behavior
